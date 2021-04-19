@@ -1,6 +1,13 @@
 const { default: axios } = require("axios");
 const express = require("express");
 const fs = require("fs");
+const {Client} = require("pg");
+const Query = require("pg").Query;
+
+// DB connection
+const client = new Client({
+  user : 'devimgdl', host : '10.203.7.146', database : 'devimgdldb', password : 'd2vimgdl146^', port : 5475
+});
 
 const app = express();
 const port = 7010;
@@ -9,7 +16,7 @@ app.get("/performance", (req, res) => {
   res.send("hello");
 });
 
-app.get("/performance/fileTest", (req, res) => {
+app.get("/fileTest", (req, res) => {
   let start = new Date().getTime();
 
   const count = 100;
@@ -66,7 +73,7 @@ const getData = async () => {
   );
 };
 
-app.get("/performance/httpTest", async (req, res) => {
+app.get("/httpTest", async (req, res) => {
   let start = new Date().getTime();
   const { data } = await getData();
   console.log(data);
@@ -75,6 +82,54 @@ app.get("/performance/httpTest", async (req, res) => {
   res.send("success");
 });
 
+app.get("/dbTest", (req, res) => {
+  let start = new Date().getTime();
+  let count = 10;
+  //Insert
+  const insertSql = "INSERT INTO cbot_token VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
+  for(let i = 0; i < count; i++ ){
+    const values= [`id${i}`, `cntt${i}`, 'test', 'Y', '163235', 'now()', '163235', 'now()']
+    client.query(insertSql, values, (err,result) => {
+      if(err){
+        console.log(err.stack);
+      }else{
+        console.log("insert success")
+      }
+    })
+  }
+
+  //Select
+  const selectSql = "SELECT * FROM cbot_token WHERE cbot_enty_grp_id=$1"
+  client.query(selectSql, ['test'], (err, result) => {
+    if(err){
+      console.log(err.stack);
+    }else{
+      console.log("select success");
+    }
+  })
+
+  //Delete
+  const deleteSql = "DELETE FROM cbot_token WHERE cbot_enty_grp_id=$1"
+  client.query(deleteSql, ['test'], (err, result) => {
+    if(err){
+      console.log(err.stack);
+    }else{
+      console.log("delete success");
+      let end = new Date().getTime();
+      console.log(`실행시간: ${(end - start) / 1000} 초`);
+    }
+    res.send("success")
+  })
+
+});
+
 app.listen(port, () => {
+  client.connect(err => {
+    if(err){
+      console.log("connection error", err.stack)
+    }else{
+      console.log("database connection success!");
+    }
+  });
   console.log(`Express server start, port: ${port}`);
 });
