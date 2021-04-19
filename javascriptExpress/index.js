@@ -61,6 +61,10 @@ app.get("/fileTest", (req, res) => {
     });
   }
 
+  for(let i =0; i < count; i++){
+    fs.unlinkSync(`data/${i}file.txt`);
+  }
+
   let end = new Date().getTime();
   console.log(`실행시간: ${(end - start) / 1000} 초`);
 

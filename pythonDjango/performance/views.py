@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import timeit
 import requests
 from django.db import connection
+import os
 # Create your views here.
 def index(request):
 
@@ -24,8 +25,11 @@ def fileTest(request):
     for i in range(count):
         with open(f"data/{i}file", "r") as f:
             lines = f.readlines()
-            for line in lines:
-                print(line)
+    
+    # 3. 파일 제거
+    for i in range(count):
+        os.remove(f"data/{i}file")
+
 
     terminate_time = timeit.default_timer()
 

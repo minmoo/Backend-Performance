@@ -47,13 +47,16 @@ public class PerformanceController{
             try{
                 BufferedReader reader = new BufferedReader(new FileReader(file));
                 String line;
-                while((line = reader.readLine()) != null){
-                    System.out.println(line);
-                }
+                while((line = reader.readLine()) != null){}
                 reader.close();
             }catch(IOException e){
                 e.printStackTrace();
             }
+        }
+
+        for(int i=0; i < count; i++){
+            File file = new File("data/"+ i + "file.txt");
+            file.delete();
         }
 
         long afterTime = System.currentTimeMillis();
@@ -78,19 +81,7 @@ public class PerformanceController{
     @RequestMapping("/dbTest")
     public @ResponseBody String dbTest() throws Exception{
         long beforeTime = System.currentTimeMillis();
-        int count = 10;
-        for(int i=0; i < count; i++ ){
-            TestDto param = new TestDto();
-            param.setCbotTokenId("id" + i);
-            param.setCbotTokenCntt("cntt" + i);
-            param.setCbotEntyGrpId("test");
-            testService.insertTest(param);
-        }
-
-        List<TestDto> allList = testService.getAll();
-        System.out.println(allList.size());
-
-        testService.deleteTest();
+        testService.performance();
         long afterTime = System.currentTimeMillis();
       
         System.out.println("시간차이(ms) : "+ (double)(afterTime - beforeTime)/1000);
