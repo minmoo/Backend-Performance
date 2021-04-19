@@ -4,10 +4,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import java.io.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.Statement;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.example.performance.TestService;
+import com.example.performance.TestDto;
+import java.util.List;
 
 @RestController
 public class PerformanceController{
+    @Autowired
+    TestService testService;
+
     @RequestMapping("/")
     public String hello(){
         return "hello world";
@@ -46,7 +57,7 @@ public class PerformanceController{
         }
 
         long afterTime = System.currentTimeMillis();
-        System.out.println("시간차이(ms) : "+ (afterTime - beforeTime));
+        System.out.println("시간차이(ms) : "+ (double)(afterTime - beforeTime)/1000);
         
 
         return "success";
@@ -60,12 +71,30 @@ public class PerformanceController{
         String result = rest.getForObject("https://22f3baa6-14d8-403f-959e-476ca9d4376e.mock.pstmn.io/test", String.class);
         
         long afterTime = System.currentTimeMillis();
-        System.out.println("시간차이(ms) : "+ (afterTime - beforeTime));
+        System.out.println("시간차이(ms) : "+ (double)(afterTime - beforeTime)/1000);
         return "success";
     }
 
     @RequestMapping("/dbTest")
-    public String dbTest(){
+    public @ResponseBody String dbTest() throws Exception{
+        long beforeTime = System.currentTimeMillis();
+        int count = 10;
+        for(int i=0; i < count; i++ ){
+            TestDto param = new TestDto();
+            param.setCbotTokenId("id" + i);
+            param.setCbotTokenCntt("cntt" + i);
+            param.setCbotEntyGrpId("test");
+            testService.insertTest(param);
+        }
+
+        List<TestDto> allList = testService.getAll();
+        System.out.println(allList.size());
+
+        testService.deleteTest();
+        long afterTime = System.currentTimeMillis();
+      
+        System.out.println("시간차이(ms) : "+ (double)(afterTime - beforeTime)/1000);
+        
         return "success";
     }
 }

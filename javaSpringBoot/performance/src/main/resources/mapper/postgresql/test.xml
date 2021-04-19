@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.performance.mapper.TestMapper">
+    <select id="getAll" resultType="com.example.performance.TestDto">
+        SELECT cbot_token_id FROM cbot_token
+    </select>
+
+    <insert id="insertTest" parameterType="com.example.performance.TestDto">
+        INSERT INTO cbot_token VALUES (#{cbotTokenId}, #{cbotTokenCntt}, #{cbotEntyGrpId}, 'Y', '163235', 'now()','163235', 'now()')
+    </insert>
+
+    <delete id="deleteTest">
+        DELETE FROM cbot_token WHERE cbot_enty_grp_id='test'
+    </delete>
+
+
+
+</mapper>
