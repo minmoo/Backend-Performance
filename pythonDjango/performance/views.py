@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import timeit
 import requests
+from django.db import connection
 # Create your views here.
 def index(request):
 
@@ -41,6 +42,21 @@ def httpTest(request):
     return HttpResponse("success")
 
 def dbTest(request):
+    start_time = timeit.default_timer()
+    count = 10
+    with connection.cursor() as cursor:
+        # Insert
+        for i in range(count):
+            cursor.execute(f"INSERT INTO cbot_token VALUES ('id{i}', 'cntt{i}', 'test', 'Y', '163235', 'now()', '163235', 'now()')")
+        
+        # Select
+        cursor.execute("SELECT * FROM cbot_token WHERE cbot_enty_grp_id='test'")
+        rows = cursor.fetchall()
 
+        # Delete
+        cursor.execute("DELETE FROM cbot_token WHERE cbot_enty_grp_id='test'")
+        
+    terminate_time = timeit.default_timer()
+    print(f"실행시간: {terminate_time - start_time} 초 ")
 
     return HttpResponse("success")
