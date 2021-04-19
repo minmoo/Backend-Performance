@@ -74,10 +74,7 @@ WSGI_APPLICATION = 'pythonDjango.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+'default': { 'ENGINE': 'django.db.backends.postgresql', 'NAME': 'devimgdldb', 'USER': 'devimgdl', 'PASSWORD' : 'd2vimgdl146^', 'HOST' : '10.203.7.146', 'PORT' :'5475' }
 }
 
 
